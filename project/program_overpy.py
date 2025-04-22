@@ -1,5 +1,7 @@
 import overpy
 import matplotlib.pyplot as plt
+from math import cos, radians
+
 
 class OSMVisualizer:
     def __init__(self):
@@ -23,10 +25,7 @@ class OSMVisualizer:
         return self.api.query(query)
 
     def plot_objects(self, result):
-        """
-        Отрисовывает объекты на графике.
-        :param result: Результат запроса Overpass API.
-        """
+        """Отрисовывает объекты на графике."""
         # Создаем фигуру
         fig, ax = plt.subplots(figsize=(10, 10))
 
@@ -42,7 +41,7 @@ class OSMVisualizer:
                 # Получаем координаты всех узлов в пути
                 coords = [(float(node.lat), float(node.lon)) for node in way.nodes]
                 lats, lons = zip(*coords)  # Разделяем широты и долготы
-                ax.plot(lons, lats, 'r-', linewidth=2)  # Красные линии для путей
+                ax.plot(lons, lats, 'r-', linewidth=0.5)  # Красные линии для путей
             except Exception as e:
                 print(f"Ошибка при обработке пути {way.id}: {e}")
 
@@ -55,22 +54,29 @@ class OSMVisualizer:
         plt.show()
 
     def visualize_bbox(self, bbox):
-        """
-        Основная функция для получения данных и их визуализации.
-        :param bbox: tuple(min_lat, min_lon, max_lat, max_lon) - координаты квадрата.
-        """
+        """Основная функция для получения данных и их визуализации."""
+
         print("Получение данных из OpenStreetMap...")
         result = self.fetch_data(bbox)
         print(f"Найдено узлов: {len(result.nodes)}, путей: {len(result.ways)}")
         print("Отрисовка объектов...")
         self.plot_objects(result)
 
+    @staticmethod
+    def calculate_bbox(latitude, longitude, delta=0.01):
+        """Рассчитывает bounding box на основе центральных координат и дельты."""
+
+        min_lat = latitude - delta
+        max_lat = latitude + delta
+        min_lon = longitude - delta / abs(cos(radians(latitude)))
+        max_lon = longitude + delta / abs(cos(radians(latitude)))
+
+        return min_lat, min_lon, max_lat, max_lon
+
 
 # Пример использования
 if __name__ == "__main__":
-    # Задаем координаты квадрата (широта, долгота)
-    bbox = (55.750, 37.600, 55.760, 37.610)  # Центр Москвы
-
-    # Создаем экземпляр класса и запускаем визуализацию
     visualizer = OSMVisualizer()
+    bbox = visualizer.calculate_bbox(48.7081906, 44.5153353, delta=0.01) # Центр Волгограда
+
     visualizer.visualize_bbox(bbox)

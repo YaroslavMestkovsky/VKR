@@ -1,3 +1,6 @@
 geopy
 overpy
 matplotlib
+networkx
+osmnx
+scikit-learn
