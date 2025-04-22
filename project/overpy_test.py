@@ -80,22 +80,22 @@ api = overpy.Overpass()
 # """
 
 # Найти все главные дороги в городе:
-query = """
-[out:json];
-area["name"="Волгоград"]->.searchArea;
-(
-    way["highway"="primary"](area.searchArea);
-);
-out body;
-"""
-
-# Найти все парки и стадионы:
-query = """
-[out:json];
-area["name"="New York"]->.searchArea;
-(
-    node["leisure"="park"](area.searchArea);
-    node["leisure"="stadium"](area.searchArea);
-);
-out body;
-"""
+# query = """
+# [out:json];
+# area["name"="Волгоград"]->.searchArea;
+# (
+#     way["highway"="primary"](area.searchArea);
+# );
+# out body;
+# """
+#
+# # Найти все парки и стадионы:
+# query = """
+# [out:json];
+# area["name"="New York"]->.searchArea;
+# (
+#     node["leisure"="park"](area.searchArea);
+#     node["leisure"="stadium"](area.searchArea);
+# );
+# out body;
+# """

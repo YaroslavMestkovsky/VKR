@@ -20,6 +20,3 @@ class Geopy:
 
     def reverse(self, latitude, longitude):
         return self.geolocator.reverse((latitude, longitude))
-
-
-
