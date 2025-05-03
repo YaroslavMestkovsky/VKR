@@ -1,2 +1,4 @@
-/project/cache/
+cache
 .idea
+*.png
+venv

@@ -1,0 +1,2 @@
+class GeolocatorException(Exception):
+    pass
