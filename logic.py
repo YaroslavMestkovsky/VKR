@@ -27,7 +27,7 @@ from osmnx._errors import InsufficientResponseError
 from matplotlib.patches import Polygon as MplPolygon
 
 # Локальные импорты
-from utils import GeolocatorException
+from utils import GeolocatorException, MapError, MapInitializationError, MapProcessingError
 from constants import DISPLAY_SETTINGS, CLUSTER_SETTINGS
 
 
@@ -38,17 +38,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-class MapError(Exception):
-    """Базовый класс для исключений модуля Map."""
-    pass
-
-class MapInitializationError(MapError):
-    """Исключение при инициализации карты."""
-    pass
-
-class MapProcessingError(MapError):
-    """Исключение при обработке данных карты."""
-    pass
 
 def timing(f: Callable) -> Callable:
     """Декоратор для измерения времени выполнения функции.

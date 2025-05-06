@@ -34,6 +34,7 @@ from PyQt6.QtWidgets import (
 
 from constants import CITIES, OBJECTS, RADIUSES, DISPLAY_SETTINGS, SAVE_SETTINGS, DEFAULT_TAGS, TAGS_MAP
 from logic import Map
+from utils import ValidationError
 
 # Настройка логирования
 logging.basicConfig(
@@ -41,11 +42,6 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
-
-
-class ValidationError(Exception):
-    """Исключение для ошибок валидации."""
-    pass
 
 
 class InteractiveCanvas(FigureCanvas):
