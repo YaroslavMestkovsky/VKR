@@ -15,7 +15,6 @@ from typing import List, Dict, Any, Optional, Callable, Tuple
 import concurrent
 import osmnx as ox
 import matplotlib.pyplot as plt
-import pandas as pd
 import numpy as np
 from sklearn.cluster import MiniBatchKMeans
 from shapely.geometry import Point, MultiPolygon, Polygon
@@ -25,8 +24,6 @@ from matplotlib.collections import PatchCollection
 from geopandas import GeoDataFrame
 from geopy.geocoders import Nominatim
 from osmnx._errors import InsufficientResponseError
-import pygeos
-from pygeos import from_shapely
 from matplotlib.patches import Polygon as MplPolygon
 
 # Локальные импорты
@@ -152,7 +149,6 @@ class Map:
             self.buildings = next((tag["points"] for tag in _tags if tag["label"] == "Здания"), None)
             if self.buildings is not None:
                 self.buildings = self.buildings.simplify(tolerance=DISPLAY_SETTINGS['TOLERANCE'])
-                self.building_sindex = pygeos.STRtree(from_shapely(self.buildings.geometry.values))
 
             build_points = []
             for tag in _tags:
@@ -433,7 +429,7 @@ class Map:
 
     def _highlight_buildings(self) -> None:
         """Выделение зданий в зависимости от их расположения относительно кластеров."""
-        if self.building_sindex is None:
+        if self.buildings is None:
             return
 
         def check_within(gdf: GeoDataFrame, circles: List[Polygon]) -> GeoDataFrame:
@@ -446,11 +442,9 @@ class Map:
             Returns:
                 GeoDataFrame с зданиями внутри кругов
             """
-            pygeos_geoms = from_shapely(gdf.geometry.values)
-            circle_geoms = [from_shapely(circle) for circle in circles]
-            mask = np.zeros(len(pygeos_geoms), dtype=bool)
-            for circle in circle_geoms:
-                mask |= pygeos.contains(circle, pygeos_geoms)
+            mask = np.zeros(len(gdf), dtype=bool)
+            for circle in circles:
+                mask |= gdf.geometry.apply(lambda x: x.within(circle))
             return gdf[mask]
 
         buildings_in_clusters = check_within(self.buildings, self.cluster_circles)
